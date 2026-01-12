@@ -1,0 +1,72 @@
+version: 2
+
+sources:
+  - name: mercurymart_raw
+    description: "Raw source tables for MercuryMart e-commerce platform"
+    database: MERCURYMART      
+    schema: DBT_RAHUJA
+
+    tables:
+
+      - name: raw_coupons
+        description: "Coupon and discount definitions"
+
+      - name: raw_customers
+        description: "Customer master data"
+
+      - name: raw_inventory_snapshots
+        description: "Inventory snapshot per product per day"
+
+      - name: raw_marketing_campaigns
+        description: "Marketing campaign metadata"
+
+      - name: raw_orders
+        description: "Order header level transactional data"
+        config:
+          loaded_at_field: order_date
+          freshness:
+            warn_after:
+              count: 1
+              period: day
+            error_after:
+              count: 2
+              period: day
+
+      - name: raw_order_items
+        description: "Order line item details"
+
+      - name: raw_payments
+        description: "Payment transactions for orders"
+        config:
+          loaded_at_field: payment_date
+          freshness:
+            warn_after:
+              count: 1
+              period: day
+            error_after:
+              count: 2
+              period: day
+
+      - name: raw_products
+        description: "Product catalog master data"
+
+      - name: raw_refunds
+        description: "Refund transactions linked to orders"
+
+      - name: raw_suppliers
+        description: "Supplier master data"
+
+      - name: raw_web_events
+        description: "Event-level website interaction data"
+        config:
+          loaded_at_field: event_timestamp
+          freshness:
+            warn_after:
+              count: 6
+              period: hour
+            error_after:
+              count: 12
+              period: hour
+
+      - name: raw_web_sessions
+        description: "Session-level website activity data"
