@@ -1,0 +1,20 @@
+version: 2
+
+exposures:
+
+  - name: orders_performance_dashboard
+    label: Orders Performance Dashboard
+    type: dashboard
+    maturity: high
+    description: >
+      Executive dashboard showing daily orders, revenue,
+      customer activity, and payment performance.
+
+    depends_on:
+      - ref('fct_orders_daily')
+      - ref('dim_customers')
+      - ref('dim_product')
+
+    owner:
+      name: Analytics Team
+      email: analytics

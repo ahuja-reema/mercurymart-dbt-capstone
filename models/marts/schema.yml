@@ -1,0 +1,78 @@
+version: 2
+
+models:
+
+  # ---------------------------------------
+  # Dimension: dim_customers
+  # ---------------------------------------
+  - name: dim_customers
+    description: "Customer dimension table with lifetime metrics, loyalty tier, and first order date."
+    columns:
+      - name: customer_id
+        description: "Unique identifier for the customer"
+        tests:
+          - not_null
+          - unique
+      - name: first_name
+        description: "Customer first name"
+      - name: last_name
+        description: "Customer last name"
+      - name: email
+        description: "Customer email"
+        tests:
+          - not_null
+      - name: customer_created_date
+        description: "Date customer signed up"
+      - name: country
+        description: "Customer country"
+      - name: segment
+        description: "Customer segment"
+      - name: first_order_date
+        description: "Date of first order"
+      - name: lifetime_value
+        description: "Total spend by customer"
+      - name: loyalty_tier
+        description: "Bronze/Silver/Gold based on lifetime value"
+
+  # ---------------------------------------
+  # Fact: fct_orders_daily
+  # ---------------------------------------
+  - name: fct_orders_daily
+    description: "Daily orders fact table including revenue, payment, refund, and net revenue metrics."
+    columns:
+      - name: order_date
+        description: "Date when the order was placed"
+      - name: order_status
+        description: "Status of the order (e.g., completed, canceled)"
+      - name: gross_revenue
+        description: "Total order amount before refunds"
+      - name: payment_amount
+        description: "Payment collected for the order"
+      - name: refund_amount
+        description: "Refund amount for the order"
+      - name: net_revenue
+        description: "Net revenue after refunds"
+      - name: order_id
+        tests:
+          - not_null
+          - unique
+      - name: customer_id
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_customers')
+              field: customer_id
+      - name: net_revenue
+        tests:
+          - not_null
+          - order_net_amount_non_negative
+# ---------------------------------------
+  # Dimension: dim_product
+  # ---------------------------------------
+  - name: dim_product
+    description: "Product dimension table with brand, category, supplier, status, and price bucket."
+    columns:
+      - name: category
+        tests:
+          - accepted_values:
+              values: ['electronics', 'apparel', 'home', 'beauty', 'grocery']
